@@ -12,6 +12,8 @@ import {
   isMuted,
   setMuted,
   playBattleStart,
+  playDeal,
+  playReveal,
   playBust,
   playChip,
   playClick,
@@ -27,7 +29,7 @@ import {
 import { Background, BattleFx, Button, Finale, TeamSection, PokemonModal } from "./components";
 import styles from "./App.module.css";
 
-const INTRO_MS = 800; // yeni komandalar görünəndən sonra döyüşün başlamasına qədər
+const INTRO_MS = 1500; // kartlar çevrilib açıldıqdan sonra döyüşün başlamasına qədər
 const STEP_MS = { 1: 450, 2: 240 }; // iki zərbə arasındakı fasilə (sürətə görə)
 const STAKES = [10, 25, 50];
 const ZOOM_MS = 1700; // kamera qalibə yaxınlaşır, sonra final kartı açılır
@@ -122,6 +124,7 @@ export default function App() {
     setOutcome(null);
     setFx(null);
     playBattleStart();
+    playReveal();
     startMusic();
 
     let i = 0;
@@ -173,7 +176,7 @@ export default function App() {
     clearTimeout(finaleTimer.current);
     setFinale(0);
     setPhase("pick");
-    playClick();
+    playDeal();
   };
 
   const chooseStake = (value) => {
@@ -217,6 +220,7 @@ export default function App() {
           result={resultOf(index)}
           fx={fx}
           side={index}
+          revealed={phase !== "pick"}
           onMore={openModal}
         />
       </div>

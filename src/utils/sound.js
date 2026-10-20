@@ -440,3 +440,23 @@ export const playZoom = () =>
     voice(c, { freq: 90, to: 28, t: t + 0.9, dur: 0.6, vol: 0.5, wet: 0.2 });
     hiss(c, { t: t + 0.9, dur: 0.25, vol: 0.2, freq: 1200 });
   });
+
+// Kartların paylanması: 8 sürətli "fvit" (hər komanda növbə ilə)
+export const playDeal = () =>
+  run((c, t) => {
+    for (let k = 0; k < 8; k++) {
+      const at = k * 0.09;
+      hiss(c, { t: t + at, dur: 0.09, vol: 0.1, freq: 2800, to: 900, q: 0.9, attack: 0.01 });
+      voice(c, { type: "triangle", freq: 500, to: 300, t: t + at + 0.04, dur: 0.05, vol: 0.05 });
+    }
+  });
+
+// Kartların çevrilməsi: hər kart üçün "tak" + parıltı (110ms fasilə ilə, 8 kart)
+export const playReveal = () =>
+  run((c, t) => {
+    for (let k = 0; k < 8; k++) {
+      const at = k * 0.11 + 0.17;
+      voice(c, { type: "triangle", freq: 650 + k * 40, to: 1100 + k * 40, t: t + at, dur: 0.1, vol: 0.09, wet: 0.2 });
+      hiss(c, { t: t + at, dur: 0.05, vol: 0.08, freq: 3000 });
+    }
+  });

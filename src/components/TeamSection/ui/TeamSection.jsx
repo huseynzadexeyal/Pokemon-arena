@@ -11,7 +11,7 @@ const TITLES = { winner: "Winner", lose: "Lose" };
 //  result — "winner" | "lose" | undefined (döyüş gedərkən nəticə yoxdur)
 //  fx     — cari hücum hadisəsi və ya null
 //  side   — 0 (yuxarı komanda) | 1 (aşağı komanda): hücum istiqamətini təyin edir
-export default function TeamSection({ name, team, hp, result, fx, side, onMore }) {
+export default function TeamSection({ name, team, hp, result, fx, side, revealed = true, onMore }) {
   const isWinner = result === "winner";
   const total = totalHp(team, hp);
 
@@ -33,7 +33,7 @@ export default function TeamSection({ name, team, hp, result, fx, side, onMore }
           {result ? `${name}: ${TITLES[result]}` : name}
         </h2>
         <p className={styles.total} aria-label={`Total HP ${total}`}>
-          <CountUp value={total} />
+          {revealed ? <CountUp value={total} /> : "???"}
           <span className={styles.unit}>HP</span>
         </p>
       </div>
@@ -45,6 +45,8 @@ export default function TeamSection({ name, team, hp, result, fx, side, onMore }
             pokemon={pokemon}
             hp={hp[pokemon.id]}
             index={i}
+            side={side}
+            revealed={revealed}
             fx={fxFor(pokemon)}
             onMore={onMore}
           />
