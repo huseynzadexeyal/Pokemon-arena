@@ -14,7 +14,7 @@ const hpColor = (ratio) =>
 // props:
 //  hp — cari can; pokemon.hp — maksimum can
 //  fx — { kind: "attack" | "hit" | "dodge", dir, n } və ya null (yalnız iştirak edən kartlara verilir)
-const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, side = 0, revealed = true, fx = null }) {
+const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, side = 0, revealed = true, cheer = false, fx = null }) {
   const { name, id, type, move } = pokemon;
   const maxHp = pokemon.hp;
   const ratio = hp / maxHp;
@@ -26,6 +26,8 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
   const [src, setSrc] = useState(getImage(id));
   // Kart əvvəlcə arxası (Pokeball) ilə paylanır; "Fight" basılanda növbə ilə çevrilib Pokemon açılır
   const [faceUp, setFaceUp] = useState(revealed);
+  const [spawn, setSpawn] = useState(false); // çevriləndən sonra "doğulma" effekti
+  const spawnTimer = useRef(0);
 
   // Real şəkli əvvəlcədən yükləyirik ki, kart çevriləndə dərhal görünsün
   useEffect(() => {
@@ -48,6 +50,8 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
         );
         out.onfinish = () => {
           setFaceUp(true);
+          setSpawn(true);
+          spawnTimer.current = setTimeout(() => setSpawn(false), 900);
           out.cancel();
           el.animate(
             [{ transform: "rotateY(-90deg) scale(1.06)" }, { transform: "rotateY(0deg) scale(1)" }],
@@ -57,7 +61,10 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
         };
       }, wait)
     );
-    return () => timers.forEach(clearTimeout);
+    return () => {
+      timers.forEach(clearTimeout);
+      clearTimeout(spawnTimer.current);
+    };
   }, [revealed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Hücum: kart rəqibə tərəf irəli atılır. Zərbə: kart silkələnir və ağ parıldayır.
@@ -115,6 +122,9 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
       const y = (clientY - rect.top) / rect.height;
       el.style.setProperty("--rx", `${(0.5 - y) * 12}deg`);
       el.style.setProperty("--ry", `${(x - 0.5) * 12}deg`);
+      // Şəkil kartdan bir az fərqli sürüşür: dərinlik (parallax) hissi
+      el.style.setProperty("--px", `${(x - 0.5) * 14}px`);
+      el.style.setProperty("--py", `${(y - 0.5) * 10}px`);
     });
   };
 
@@ -124,6 +134,8 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
     if (!el) return;
     el.style.setProperty("--rx", "0deg");
     el.style.setProperty("--ry", "0deg");
+    el.style.setProperty("--px", "0px");
+    el.style.setProperty("--py", "0px");
   };
 
   return (
@@ -148,7 +160,20 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
       >
         <h3 className={styles.name}>{faceUp ? name : "???"}</h3>
 
-        <div className={styles.art}>
+        <div
+          className={`${styles.art} ${faceUp && hp > 0 ? styles.live : ""} ${spawn ? styles.spawn : ""} ${
+            cheer ? styles.cheer : ""
+          } ${faceUp && hp > 0 && ratio <= 0.3 ? styles.weak : ""}`}
+          data-t={type}
+        >
+          <span className={styles.shadow} aria-hidden="true" />
+          {/* Tipə uyğun uçuşan hissəciklər: alov közləri, qabarcıqlar, qığılcımlar... */}
+          {faceUp &&
+            hp > 0 &&
+            [0, 1, 2, 3, 4, 5].map((k) => (
+              <span key={k} className={styles.mote} style={{ "--k": k }} aria-hidden="true" />
+            ))}
+          {spawn && <span className={styles.spawnRing} aria-hidden="true" />}
           <img
             className={styles.image}
             src={faceUp ? src : FALLBACK_IMAGE}

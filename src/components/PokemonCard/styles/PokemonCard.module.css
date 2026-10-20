@@ -181,3 +181,123 @@
 .facedown .image { filter: saturate(0.85); }
 .facedown .art::before { opacity: 0.25; animation: none; }
 .facedown .type { background: rgba(255, 255, 255, 0.18); color: var(--muted); }
+
+/* =====================================================================
+   Canlı Pokemon: tipə görə hərəkət, kölgə, hissəciklər, doğulma, sevinc
+   Yalnız transform / opacity / individual translate-rotate-scale xassələri
+   ===================================================================== */
+.shadow {
+  position: absolute;
+  z-index: -1;
+  bottom: 3px;
+  left: 24%;
+  width: 52%;
+  height: 9%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.6), transparent 70%);
+}
+.live .shadow { animation: shadowPulse 3.6s ease-in-out infinite; animation-delay: calc(var(--i) * -0.7s); }
+@keyframes shadowPulse { 50% { transform: scale(0.8); opacity: 0.6; } }
+
+/* Siçanla üzərinə gələndə şəkil bir az irəli çıxır (parallax) */
+.live .image { translate: var(--px, 0px) var(--py, 0px); transition: translate 0.15s ease-out; }
+.tilt:hover .live .image { scale: 1.06; }
+
+/* ---- Tipə uyğun "nəfəs alma" hərəkətləri ---- */
+.live[data-t="fire"] .image { animation: idleFire 1.4s ease-in-out infinite; animation-delay: calc(var(--i) * -0.3s); }
+@keyframes idleFire { 0%, 100% { transform: translateY(0) scale(1); } 30% { transform: translateY(-5px) scale(1.04, 0.98); } 60% { transform: translateY(-2px) scale(0.98, 1.03); } }
+
+.live[data-t="water"] .image { animation: idleWater 3.2s ease-in-out infinite; animation-delay: calc(var(--i) * -0.6s); }
+@keyframes idleWater { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-6px); } }
+
+.live[data-t="electric"] .image { animation: idleElectric 2.2s steps(1) infinite; animation-delay: calc(var(--i) * -0.4s); }
+@keyframes idleElectric {
+  0% { transform: translate(0, 0) scale(1); filter: none; }
+  70% { transform: translate(0, -3px) scale(1.02); }
+  86% { transform: translate(-2px, 1px) scale(1.05); filter: brightness(1.5); }
+  90% { transform: translate(2px, -1px) scale(1.03); filter: brightness(1.25); }
+  94% { transform: translate(0, 0) scale(1); filter: none; }
+}
+
+.live[data-t="bug"] .image { animation: idleBug 1.1s ease-in-out infinite; animation-delay: calc(var(--i) * -0.2s); }
+@keyframes idleBug { 0%, 100% { transform: rotate(-5deg) scale(1, 1); } 50% { transform: rotate(5deg) scale(1.04, 0.96); } }
+
+.live[data-t="flying"] .image { animation: idleFly 2.4s ease-in-out infinite; animation-delay: calc(var(--i) * -0.5s); }
+@keyframes idleFly { 0%, 100% { transform: translate(-4px, 0) rotate(-3deg); } 25% { transform: translate(0, -9px) rotate(0); } 50% { transform: translate(4px, -2px) rotate(3deg); } 75% { transform: translate(0, -9px) rotate(0); } }
+
+.live[data-t="poison"] .image { animation: idlePoison 3s ease-in-out infinite; animation-delay: calc(var(--i) * -0.5s); }
+@keyframes idlePoison { 0%, 100% { transform: scale(1, 1) rotate(-2deg); } 50% { transform: scale(1.06, 0.95) rotate(2deg); } }
+
+.live[data-t="normal"] .image { animation: idleNormal 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * -0.4s); }
+@keyframes idleNormal { 0%, 100% { transform: translateY(0) scale(1.02, 0.97); } 45% { transform: translateY(-8px) scale(0.98, 1.04); } }
+
+/* ---- Ətrafda uçuşan hissəciklər ---- */
+.mote {
+  position: absolute;
+  z-index: 2;
+  bottom: 14%;
+  left: calc(14% + var(--k) * 13%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  opacity: 0;
+  pointer-events: none;
+  animation: rise 2.6s ease-out infinite;
+  animation-delay: calc(var(--k) * -0.45s - var(--i) * 0.3s);
+}
+@keyframes rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  20% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(calc((var(--k) - 2.5) * 5px), -75px) scale(1.1); }
+}
+.live[data-t="fire"] .mote { background: radial-gradient(circle, #fff3b0, #ff8a2e 60%, #ff3d1a); box-shadow: 0 0 8px #ff7a45; animation-duration: 1.7s; }
+.live[data-t="water"] .mote { background: radial-gradient(circle at 35% 30%, #fff, #6ec3ff 60%, #2e8bff); width: 8px; height: 8px; animation-duration: 3.2s; }
+.live[data-t="poison"] .mote { background: radial-gradient(circle at 35% 30%, #e6b8ff, #b65cff 60%); width: 9px; height: 9px; animation-duration: 3.4s; }
+.live[data-t="electric"] .mote { width: 2px; height: 14px; border-radius: 2px; background: #fff7b0; bottom: auto; top: calc(18% + var(--k) * 9%); animation: zapMote 1.2s steps(1) infinite; animation-delay: calc(var(--k) * -0.27s); }
+@keyframes zapMote { 0%, 55% { opacity: 0; } 60% { opacity: 1; transform: rotate(25deg); } 70% { opacity: 0.2; } 80% { opacity: 1; transform: rotate(-20deg); } 90% { opacity: 0; } }
+.live[data-t="flying"] .mote { width: 9px; height: 5px; border-radius: 60% 0; background: #eaf0ff; box-shadow: 0 0 6px #8aa4ff; animation-name: drift; animation-duration: 3.4s; }
+@keyframes drift {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0); }
+  20% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(calc((var(--k) - 2.5) * 12px), -55px) rotate(260deg); }
+}
+.live[data-t="bug"] .mote { width: 5px; height: 5px; background: #b6e84a; box-shadow: 0 0 6px #9ccc3d; bottom: 50%; left: 50%; animation: orbit 2.2s linear infinite; animation-delay: calc(var(--k) * -0.37s); }
+@keyframes orbit {
+  0% { opacity: 1; transform: rotate(0deg) translateX(44px) scale(0.8); }
+  100% { opacity: 1; transform: rotate(360deg) translateX(44px) scale(0.8); }
+}
+.live[data-t="normal"] .mote { background: #fff; clip-path: polygon(50% 0, 62% 36%, 100% 38%, 70% 60%, 80% 100%, 50% 76%, 20% 100%, 30% 60%, 0 38%, 38% 36%); width: 9px; height: 9px; bottom: auto; top: calc(14% + var(--k) * 10%); animation: twinkle 1.8s ease-in-out infinite; animation-delay: calc(var(--k) * -0.3s); }
+@keyframes twinkle { 0%, 100% { opacity: 0; transform: scale(0.3) rotate(0); } 50% { opacity: 1; transform: scale(1) rotate(90deg); } }
+
+/* ---- Doğulma: kart çevriləndən sonra Pokemon "sıçrayıb" çıxır ---- */
+.spawn .image { animation: spawnPop 0.8s cubic-bezier(0.2, 1.6, 0.4, 1) both !important; }
+@keyframes spawnPop {
+  0% { transform: scale(0.2) rotate(-14deg); filter: brightness(3) saturate(0); opacity: 0; }
+  55% { transform: scale(1.22) rotate(4deg); filter: brightness(1.5); opacity: 1; }
+  100% { transform: scale(1) rotate(0); filter: none; opacity: 1; }
+}
+.spawnRing {
+  position: absolute;
+  z-index: 1;
+  inset: 12%;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  animation: spawnRing 0.7s ease-out both;
+}
+@keyframes spawnRing { from { opacity: 1; transform: scale(0.3); } to { opacity: 0; transform: scale(1.7); } }
+
+/* ---- Az can: Pokemon yorulur, titrəyir və qırmızımtıl parlayır ---- */
+.weak .image { animation: tired 0.9s ease-in-out infinite !important; filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8)); }
+@keyframes tired { 0%, 100% { transform: translate(0, 2px) scale(0.97); } 25% { transform: translate(-2px, 3px) scale(0.97); } 75% { transform: translate(2px, 3px) scale(0.97); } }
+.weak .mote { display: none; }
+
+/* ---- Qalib: sağ qalan Pokemonlar sevinclə tullanır ---- */
+.cheer .image { animation: cheerHop 0.7s cubic-bezier(0.3, 0, 0.3, 1) infinite !important; animation-delay: calc(var(--i) * 0.12s) !important; }
+@keyframes cheerHop {
+  0%, 100% { transform: translateY(0) scale(1.05, 0.93); }
+  45% { transform: translateY(-16px) scale(0.96, 1.08) rotate(6deg); }
+  70% { transform: translateY(-4px) scale(1) rotate(-4deg); }
+}
+.cheer .shadow { animation: shadowPulse 0.7s ease-in-out infinite; }

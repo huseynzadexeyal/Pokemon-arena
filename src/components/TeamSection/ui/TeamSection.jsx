@@ -47,6 +47,7 @@ export default function TeamSection({ name, team, hp, result, fx, side, revealed
             index={i}
             side={side}
             revealed={revealed}
+            cheer={isWinner && hp[pokemon.id] > 0}
             fx={fxFor(pokemon)}
             onMore={onMore}
           />
