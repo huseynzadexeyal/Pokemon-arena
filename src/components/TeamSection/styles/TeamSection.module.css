@@ -1,0 +1,86 @@
+/* Panel ekranın yarısını doldurur: başlıq (auto) + kartlar (qalan hündürlük) */
+.team {
+  --r: clamp(14px, 2.4vh, 24px);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(4px, 1vh, 12px);
+  height: 100%;
+  min-height: 0;
+  padding: clamp(6px, 1.2vh, 14px) clamp(8px, 1.5vw, 18px) clamp(8px, 1.4vh, 16px);
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px clamp(10px, 2vw, 24px);
+}
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 800 clamp(1rem, 0.7rem + 1.8vh, 1.8rem) var(--font-display);
+}
+.crown { display: inline-block; animation: crown 2.2s ease-in-out infinite; }
+@keyframes crown { 50% { transform: translateY(-4px) rotate(-8deg) scale(1.1); } }
+
+.total {
+  font: 800 clamp(1rem, 0.7rem + 1.8vh, 1.8rem) var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+.unit { margin-left: 8px; color: var(--muted); font: 600 0.8rem var(--font-body); letter-spacing: 0.1em; }
+
+/* Qalib: qızıl-yaşıl başlıq + fırlanan işıqlı çərçivə.
+   Çərçivə conic-gradient-in transform ilə fırlanmasıdır (repaint yoxdur). */
+.winner { border-color: transparent; box-shadow: 0 0 40px rgba(46, 229, 157, 0.14); }
+.winner::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--gold), #fff, var(--green), transparent);
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: spin 4s linear infinite;
+  will-change: transform;
+}
+/* Mərkəzi örtür, yalnız 2px kənar işıqlı qalır */
+.winner::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  background: var(--panel);
+  border-radius: calc(var(--r) - 2px);
+}
+@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+.winner .title {
+  background: linear-gradient(90deg, var(--gold), var(--green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.winner .total { color: var(--gold); }
+
+/* Məğlub */
+.lose .title { color: var(--red); }
+.lose .total { color: #ff8da1; }
+.lose .grid { opacity: 0.88; }
+
+/* Həmişə 4 sütun — ekrana sığır, scroll yoxdur */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(6px, 1.2vw, 16px);
+  min-height: 0;
+}

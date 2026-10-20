@@ -1,0 +1,91 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  overflow-y: auto;
+  background: rgba(4, 6, 16, 0.82); /* backdrop-filter yoxdur: yavaşladırdı */
+  animation: fade 0.2s ease both;
+}
+@keyframes fade { from { opacity: 0; } }
+
+.modal {
+  display: grid;
+  justify-items: center;
+  gap: clamp(4px, 1vh, 8px);
+  width: min(100%, 340px);
+  padding: clamp(14px, 3vh, 24px) 20px;
+  text-align: center;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 26%, #151a35), #0d1126 75%);
+  border: 1px solid var(--accent);
+  border-radius: 22px;
+  box-shadow: 0 0 50px color-mix(in srgb, var(--accent) 40%, transparent);
+  animation: pop 0.3s cubic-bezier(0.2, 1.1, 0.3, 1.2) both;
+}
+@keyframes pop { from { opacity: 0; transform: translateY(20px) scale(0.9); } }
+
+.name { font: 800 clamp(1.2rem, 3vh, 1.5rem) var(--font-display); }
+
+/* Şəkilin ətrafında fırlanan rəngli halqa (transform ilə) */
+.art {
+  --size: clamp(110px, 24vh, 180px);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--size);
+  height: var(--size);
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--accent), transparent 40%, var(--accent));
+  -webkit-mask: radial-gradient(circle, transparent 66%, #000 68%);
+  mask: radial-gradient(circle, transparent 66%, #000 68%);
+  animation: rotate 6s linear infinite;
+}
+@keyframes rotate { to { transform: rotate(360deg); } }
+
+.image {
+  position: relative;
+  width: 80%;
+  animation: float 3.6s ease-in-out infinite;
+}
+@keyframes float { 50% { transform: translateY(-6px); } }
+
+.row { color: #d8def5; font-size: 1.05rem; }
+.badge {
+  padding: 1px 12px;
+  color: #0b0e1f;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.bar { width: 100%; height: 8px; margin: 2px 0 8px; overflow: hidden; background: rgba(255, 255, 255, 0.1); border-radius: 999px; }
+.fill {
+  display: block;
+  height: 100%;
+  width: var(--pct);
+  background: linear-gradient(90deg, var(--accent), #fff);
+  border-radius: inherit;
+  transform-origin: left;
+  animation: grow 0.7s 0.15s ease-out both;
+}
+@keyframes grow { from { transform: scaleX(0); } }
+
+.mini {
+  display: inline-block;
+  margin: 0 3px;
+  padding: 0 9px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #052b1d;
+  background: var(--green);
+  border-radius: 999px;
+}
+.miniWeak { color: #3a0613; background: var(--red); }

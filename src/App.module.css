@@ -1,0 +1,196 @@
+/* Səhifə düz ekranın hündürlüyündədir (100dvh): başlıq + arena. Scroll yoxdur. */
+.page {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(6px, 1.4vh, 16px);
+  width: min(100%, 1180px);
+  height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(8px, 1.6vh, 20px) clamp(8px, 2vw, 20px);
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+/* Statik gradient başlıq (animasiyalı gradient mətn hər kadr repaint tələb edirdi) */
+.logo {
+  font: 800 clamp(1.1rem, 0.6rem + 2.6vw, 2.2rem) var(--font-display);
+  letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #7c5cff, #3fa9ff, #2ee59d, #ffd24a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 3px solid rgba(3, 42, 28, 0.25);
+  border-top-color: #032a1c;
+  border-radius: 50%;
+  animation: rotate 0.7s linear infinite;
+}
+@keyframes rotate { to { transform: rotate(360deg); } }
+
+/* Arena: yuxarı komanda / VS / aşağı komanda — qalan bütün hündürlüyü bölüşürlər */
+.arena {
+  --vs: clamp(38px, 6.5vh, 56px);
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) var(--vs) minmax(0, 1fr);
+  min-height: 0;
+}
+.side { min-height: 0; animation: enter 0.4s ease both; }
+@keyframes enter { from { opacity: 0; } }
+@keyframes slideInR { from { opacity: 0; transform: translateY(6px); } }
+
+/* ---------- VS ---------- */
+.vsRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--vs) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(6px, 1.4vw, 14px);
+}
+.cell { display: flex; min-width: 0; height: 100%; align-items: center; }
+.cellLeft { justify-content: flex-end; text-align: right; }
+.cellRight { justify-content: flex-start; text-align: left; }
+
+/* Mərc düymələri */
+.bet {
+  display: grid;
+  gap: 0;
+  max-width: 100%;
+  padding: 3px clamp(8px, 1.6vw, 18px);
+  color: var(--text);
+  font-family: var(--font-body);
+  line-height: 1.1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.bet:hover:not(:disabled) { transform: translateY(-2px); background: rgba(124, 92, 255, 0.22); border-color: var(--accent); }
+.bet:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.bet:disabled { opacity: 0.5; cursor: not-allowed; }
+.betTop { font-weight: 700; font-size: clamp(0.7rem, 1.9vh, 0.95rem); letter-spacing: 0.04em; }
+.betOdds { color: var(--gold); font-weight: 700; font-size: clamp(0.62rem, 1.7vh, 0.82rem); }
+.betOn {
+  background: linear-gradient(135deg, rgba(46, 229, 157, 0.28), rgba(255, 210, 74, 0.22));
+  border-color: var(--green);
+  box-shadow: 0 0 18px rgba(46, 229, 157, 0.35);
+}
+
+/* Kommentator və nəticə mətnləri */
+.comment, .note {
+  font-size: clamp(0.66rem, 1.9vh, 0.95rem);
+  line-height: 1.15;
+  overflow: hidden;
+  animation: slideIn 0.25s ease both;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateY(6px); } }
+.cellRight .comment { animation-name: slideInR; }
+.move { color: var(--muted); }
+.dmgText { color: #fff; font-weight: 800; }
+.crit { color: var(--gold); font-weight: 800; }
+.good { color: var(--green); font-weight: 700; }
+.weak { color: var(--muted); }
+.koText { color: var(--red); font-weight: 800; }
+.final { display: block; color: var(--red); font: 800 0.8em var(--font-display); letter-spacing: 0.06em; }
+.note b { font-family: var(--font-display); }
+.won { color: var(--green); }
+.lost { color: #ff8da1; }
+.bonus { color: var(--gold); }
+
+/* Başlıq: pul kisəsi, mərc çipləri, sürət */
+.wallet {
+  display: flex;
+  gap: 12px;
+  padding: 4px 14px;
+  font: 800 clamp(0.75rem, 0.6rem + 0.5vw, 1rem) var(--font-display);
+  font-variant-numeric: tabular-nums;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.hot { color: var(--gold); text-shadow: 0 0 10px rgba(255, 210, 74, 0.7); }
+.stakes { display: flex; gap: 4px; }
+.chip {
+  min-width: 34px;
+  padding: 3px 8px;
+  color: var(--muted);
+  font: 700 0.8rem var(--font-body);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.chip:disabled { opacity: 0.35; cursor: not-allowed; }
+.chipOn { color: #1a1300; background: var(--gold); border-color: var(--gold); }
+.speed { font: 800 0.8rem var(--font-display); }
+
+.vs {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--vs);
+  height: var(--vs);
+  font: 800 clamp(0.9rem, 2.6vh, 1.4rem) var(--font-display);
+  background: radial-gradient(circle at 30% 30%, #2a2f5f, #12152e);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  box-shadow: 0 0 22px rgba(124, 92, 255, 0.6);
+  animation: vsPulse 2.4s ease-in-out infinite;
+}
+@keyframes vsPulse { 50% { transform: scale(1.1); } }
+
+/* ---------- Döyüş gedəndə: VS qırmızı olur və zərbə halqası yayır (yalnız transform/opacity) ---------- */
+.fighting .vs {
+  color: #fff;
+  background: radial-gradient(circle at 30% 30%, #ff4d6d, #8a1030);
+  border-color: #fff;
+  box-shadow: 0 0 36px rgba(255, 77, 109, 0.85);
+  animation: slam 0.9s ease-in-out infinite;
+}
+.fighting .vs::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 3px solid var(--red);
+  border-radius: 50%;
+  animation: shock 0.9s ease-out infinite;
+}
+@keyframes slam {
+  0%, 100% { transform: scale(1.05) rotate(-4deg); }
+  50% { transform: scale(1.25) rotate(4deg); }
+}
+@keyframes shock { to { transform: scale(2.2); opacity: 0; } }
+
+/* Mərc çipləri döyüşdə gizlənir, amma yer tutur: başlıq sıçramır */
+.stakesHidden { visibility: hidden; }
+
+/* Kommentator dar xanaya sığır: maksimum 2 sətir, mobilədə əlavə detallar gizlənir */
+.comment {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+@media (max-width: 600px) {
+  .move, .weak { display: none; }
+  .final { font-size: 0.7em; }
+}
+
+/* Sikkə dəyişəndə rəqəm "sıçrayır", fərq isə yuxarı uçur */
+.coinPop { display: inline-block; animation: coinPop 0.5s ease-out; }
+@keyframes coinPop { 40% { transform: scale(1.35); } }
+.delta { position: absolute; margin-top: -2px; font-size: 0.85em; animation: deltaUp 1.6s ease-out both; pointer-events: none; }
+@keyframes deltaUp { 0% { opacity: 0; transform: translateY(14px); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-26px); } }
+.wallet { position: relative; }
+
+/* Mərhələ "pick": məlumat xanası (artıq düymə deyil) */
+.odds { display: grid; line-height: 1.1; text-align: inherit; }

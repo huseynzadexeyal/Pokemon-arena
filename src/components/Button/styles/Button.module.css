@@ -1,0 +1,57 @@
+.btn {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(4px, 0.9vh, 9px) clamp(8px, 1.6vw, 20px);
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  font: 700 clamp(0.65rem, 0.55rem + 0.5vw, 0.9rem) var(--font-body);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.label { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 10px; }
+
+/* Üzərindən keçən parıltı (yalnız hover-də, transform ilə) */
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.45) 50%, transparent 65%);
+  transform: translateX(-120%);
+}
+.btn:hover:not(:disabled)::after { transform: translateX(120%); transition: transform 0.6s ease; }
+.btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.04); }
+.btn:active:not(:disabled) { transform: scale(0.96); }
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.btn:disabled { cursor: progress; opacity: 0.85; }
+
+.danger {
+  background: linear-gradient(135deg, #ff4d6d, #ff8a3d);
+  box-shadow: 0 4px 14px rgba(255, 77, 109, 0.35);
+}
+
+/* Əsas düymə: yüngül "nəfəs" animasiyası (yalnız transform) */
+.success {
+  padding: clamp(8px, 1.6vh, 14px) clamp(20px, 3.4vw, 40px);
+  color: #032a1c;
+  font-size: clamp(0.9rem, 0.7rem + 0.7vw, 1.15rem);
+  background: linear-gradient(135deg, #12c98b, #2ee59d 55%, #8ff7cf);
+  box-shadow: 0 0 24px rgba(46, 229, 157, 0.45);
+  animation: breathe 2.2s ease-in-out infinite;
+}
+.success:disabled { animation: none; }
+@keyframes breathe { 50% { transform: scale(1.05); } }
+
+/* Səs düyməsi */
+.ghost {
+  display: grid;
+  place-items: center;
+  width: clamp(34px, 5vh, 44px);
+  height: clamp(34px, 5vh, 44px);
+  padding: 0;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+}

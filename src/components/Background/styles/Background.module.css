@@ -1,0 +1,46 @@
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: radial-gradient(120% 80% at 50% 0%, #131a3d 0%, var(--bg) 60%);
+}
+
+/* blur() əvəzinə hazır radial-gradient: render ucuzdur */
+.orb { position: absolute; border-radius: 50%; will-change: transform; }
+.orbA { width: 70vmax; height: 70vmax; top: -25vmax; left: -20vmax; background: radial-gradient(circle, rgba(75, 43, 255, 0.5), transparent 65%); animation: driftA 24s ease-in-out infinite alternate; }
+.orbB { width: 60vmax; height: 60vmax; bottom: -22vmax; right: -16vmax; background: radial-gradient(circle, rgba(255, 46, 99, 0.35), transparent 65%); animation: driftB 28s ease-in-out infinite alternate; }
+.orbC { width: 40vmax; height: 40vmax; top: 30%; left: 40%; background: radial-gradient(circle, rgba(0, 209, 178, 0.22), transparent 65%); animation: driftC 32s ease-in-out infinite alternate; }
+
+@keyframes driftA { to { transform: translate(18vmax, 12vmax) scale(1.12); } }
+@keyframes driftB { to { transform: translate(-16vmax, -10vmax) scale(1.15); } }
+@keyframes driftC { to { transform: translate(-22vmax, 8vmax) scale(0.85); } }
+
+/* Şəbəkə: background-position əvəzinə transform ilə sürüşür */
+.grid {
+  position: absolute;
+  inset: -56px 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  animation: gridMove 12s linear infinite;
+  will-change: transform;
+}
+@keyframes gridMove { to { transform: translateY(56px); } }
+
+.particle {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 20%, rgba(160, 140, 255, 0.6) 55%, transparent 70%);
+  opacity: 0;
+  animation: rise linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes rise {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.9; }
+  100% { transform: translateY(-110vh); opacity: 0; }
+}

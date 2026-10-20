@@ -1,0 +1,14 @@
+.wrap { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 3; }
+.piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: fall ease-in forwards;
+  will-change: transform, opacity;
+}
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(100vh) rotate(var(--spin)); opacity: 0; }
+}

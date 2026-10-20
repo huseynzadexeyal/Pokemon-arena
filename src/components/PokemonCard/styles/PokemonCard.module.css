@@ -1,0 +1,163 @@
+/* Xarici qat: qısa giriş animasiyası (transform + opacity) */
+.card {
+  container-type: inline-size; /* cqw vahidi üçün: ad kartın eninə görə kiçilir */
+  min-height: 0;
+  height: 100%;
+  perspective: 900px;
+  animation: cardIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+  animation-delay: calc(var(--i) * 60ms);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Daxili qat: tip rəngli kart + hover əyilməsi. Hündürlüyə görə öz-özünə kiçilir */
+.tilt {
+  --rx: 0deg;
+  --ry: 0deg;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2px, 0.6vh, 8px);
+  height: 100%;
+  padding: clamp(6px, 1.2vh, 14px) clamp(4px, 0.8vw, 12px);
+  overflow: hidden;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 24%, #151a35), #0d1126 75%);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border-radius: clamp(10px, 1.8vh, 18px);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.tilt:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Ad tam görünür: kartın eninə görə kiçilir, yenə sığmasa sətrə bölünür (kəsilmir) */
+.name {
+  flex-shrink: 0;
+  max-width: 100%;
+  font: 800 clamp(0.72rem, 8.2cqw, 1.05rem) var(--font-display);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* Şəkil sahəsi qalan boşluğu tutur. overflow:hidden şəklin ad/HP yazılarının üstünə çıxmasının qarşısını alır */
+.art {
+  position: relative;
+  isolation: isolate;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+.art::before {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent), transparent 68%);
+  opacity: 0.5;
+  animation: glow 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+@keyframes glow { 50% { transform: scale(1.18); opacity: 0.75; } }
+
+/* Şəkil sahənin içində mütləq yerləşir: öz böyük ölçüsü ilə layout-u poza bilməz */
+.image {
+  position: absolute;
+  inset: 8px 0 4px;
+  width: 100%;
+  height: calc(100% - 12px);
+  object-fit: contain;
+  animation: float 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.7s);
+}
+@keyframes float { 50% { transform: translateY(-5px); } }
+
+.type {
+  flex-shrink: 0;
+  padding: 0 12px;
+  color: #0b0e1f;
+  font-size: clamp(0.7rem, 0.6rem + 0.3vw, 0.95rem);
+  font-weight: 700;
+  text-transform: capitalize;
+  background: var(--accent);
+  border-radius: 999px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Düymə sıxışıb kəsilməsin */
+.action { flex-shrink: 0; }
+
+.hp {
+  flex-shrink: 0;
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  color: var(--muted);
+  font-size: clamp(0.65rem, 0.55rem + 0.4vw, 0.95rem);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.bar { height: 6px; overflow: hidden; background: rgba(255, 255, 255, 0.12); border-radius: 999px; }
+/* Can zolağı: zərbə dəyəndən sonra (170ms) hamar azalır */
+.fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--hp) * 100%);
+  background-color: var(--hpc);
+  border-radius: inherit;
+  transition: width 0.35s ease 0.17s, background-color 0.35s ease 0.17s;
+}
+
+/* Zərbə anında ağ parıltı (JS ilə opacity animasiya olunur) */
+.tilt { position: relative; }
+.flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* KO: kart solur, şəkil yıxılır, KO nişanı çıxır */
+.ko { opacity: 0.5; }
+.ko .image { animation: none; transform: rotate(-24deg) scale(0.9); }
+.ko .art::before { animation: none; opacity: 0.15; }
+.koBadge {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  padding: 2px 14px;
+  color: #fff;
+  font: 800 clamp(0.9rem, 2.4vh, 1.4rem) var(--font-display);
+  background: var(--red);
+  border-radius: 8px;
+  transform: translate(-50%, -50%) rotate(-12deg);
+  animation: koPop 0.35s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+@keyframes koPop { from { transform: translate(-50%, -50%) rotate(-12deg) scale(2); opacity: 0; } }
+
+/* Kiçik ekran: yer qənaəti üçün tip badge-i gizlənir */
+@media (max-width: 480px) {
+  .type { display: none; }
+}
+/* Qısa ekran: yer qənaəti üçün tip badge-i gizlənir (HP zolağı qalır) */
+@media (max-height: 720px) {
+  .type { display: none; }
+}
+/* Mobil: Orbitron geniş olduğu üçün adlarda adi şrift */
+@media (max-width: 699px) {
+  .name { font-family: var(--font-body); font-weight: 700; font-size: clamp(0.72rem, 12cqw, 1rem); }
+}
+/* Toxunma ekranlarında əyilmə söndürülür */
+@media (hover: none) {
+  .tilt { transform: none; }
+}

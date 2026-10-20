@@ -1,0 +1,69 @@
+.layer { position: fixed; inset: 0; z-index: 40; pointer-events: none; }
+
+/* Hücum edəndən hədəfə uçan işıqlı şar (yalnız transform) */
+.orb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 22%, var(--c) 52%, transparent 72%);
+  animation: fly 0.24s ease-in both;
+  will-change: transform;
+}
+@keyframes fly {
+  from { transform: translate(var(--x0), var(--y0)) translate(-50%, -50%) scale(0.6); }
+  to { transform: translate(var(--x1), var(--y1)) translate(-50%, -50%) scale(1.4); }
+}
+
+/* Hədəfdəki zərbə nöqtəsi: şar çatandan sonra başlayır */
+.impact { position: absolute; left: 0; top: 0; transform: translate(var(--x1), var(--y1)); }
+
+.ring {
+  position: absolute;
+  left: -36px;
+  top: -36px;
+  width: 72px;
+  height: 72px;
+  border: 3px solid var(--c);
+  border-radius: 50%;
+  animation: burst 0.4s 0.22s ease-out both;
+}
+@keyframes burst {
+  from { transform: scale(0.3); opacity: 1; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+
+.dmg {
+  position: absolute;
+  left: 0;
+  top: -12px;
+  display: grid;
+  justify-items: center;
+  color: #fff;
+  font: 800 clamp(1.1rem, 2.6vh, 1.6rem) var(--font-display);
+  text-shadow: 0 0 10px var(--c), 0 2px 0 rgba(0, 0, 0, 0.7);
+  animation: rise 0.8s 0.22s ease-out both;
+}
+.koText { color: var(--red); }
+.koTag { font-size: 0.7em; letter-spacing: 0.1em; }
+@keyframes rise {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+  15% { opacity: 1; transform: translate(-50%, -6px) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -46px) scale(1); }
+}
+
+/* Yeni effekt etiketləri */
+.tag {
+  margin-top: 2px;
+  font: 800 0.5em var(--font-body);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: var(--gold);
+}
+.good { color: var(--green); }
+.weak { color: var(--muted); font-weight: 600; }
+.missText { color: var(--muted); font-size: 0.85em; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7); }
+.critText { font-size: 1.25em; text-shadow: 0 0 14px var(--gold), 0 2px 0 rgba(0, 0, 0, 0.7); }
+.critRing { border-color: var(--gold); border-width: 5px; }

@@ -1,0 +1,38 @@
+:root {
+  --bg: #070914;
+  --panel: #0f1330;
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #eef1ff;
+  --muted: #9aa3c7;
+  --red: #ff4d6d;
+  --green: #2ee59d;
+  --gold: #ffd24a;
+  --accent: #7c5cff;
+  --font-display: "Orbitron", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Rajdhani", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* Səhifə ekrana sığır: scroll yoxdur */
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+h1, h2, h3, p { margin: 0; }
+
+/* Hərəkətə həssas istifadəçilər üçün animasiyalar minimuma enir */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
