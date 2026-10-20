@@ -1,21 +1,81 @@
 .layer { position: fixed; inset: 0; z-index: 40; pointer-events: none; }
 
-/* Hücum edəndən hədəfə uçan işıqlı şar (yalnız transform) */
-.orb {
+/* Uçuş hissəciyi: hücum edəndən hədəfə. Ofset (--ox/--oy) hissəcikləri yanlara səpələyir. */
+.p {
   position: absolute;
   left: 0;
   top: 0;
-  width: 24px;
-  height: 24px;
+  width: var(--sz, 24px);
+  height: var(--sz, 24px);
   border-radius: 50%;
-  background: radial-gradient(circle, #fff 22%, var(--c) 52%, transparent 72%);
-  animation: fly 0.24s ease-in both;
+  animation: fly 0.26s var(--d, 0s) ease-in both;
   will-change: transform;
 }
 @keyframes fly {
-  from { transform: translate(var(--x0), var(--y0)) translate(-50%, -50%) scale(0.6); }
-  to { transform: translate(var(--x1), var(--y1)) translate(-50%, -50%) scale(1.4); }
+  0% { opacity: 0; transform: translate(calc(var(--x0) + var(--ox, 0px)), calc(var(--y0) + var(--oy, 0px))) translate(-50%, -50%) scale(0.6); }
+  12% { opacity: 1; }
+  100% { opacity: 1; transform: translate(calc(var(--x1) + var(--ox, 0px) * 0.3), calc(var(--y1) + var(--oy, 0px) * 0.3)) translate(-50%, -50%) scale(1.25); }
 }
+
+/* Alov topu: parlaq nüvə + sönən közlər */
+.fFire { background: radial-gradient(circle, #fff6c2 15%, #ffb02e 40%, #ff4d1a 62%, transparent 74%); animation-name: fly, flicker; animation-duration: 0.26s, 0.08s; animation-iteration-count: 1, 4; }
+@keyframes flicker { 50% { filter: brightness(1.35); } }
+
+/* Su damcıları: şəffaf mavi, parlaq kənar */
+.fDrop { background: radial-gradient(circle at 35% 30%, #fff 8%, #8ed2ff 35%, #2e8bff 70%); box-shadow: 0 0 8px #3fa9ff; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+
+/* Zəhər: bənövşəyi qabarcıqlar */
+.fToxic { background: radial-gradient(circle at 35% 30%, #e6b8ff 8%, #b65cff 45%, #5a1d9a 75%); box-shadow: 0 0 12px #b65cff; opacity: 0.9; }
+
+/* Həşərat: kiçik yaşıl dəstə */
+.fBug { background: #b6e84a; box-shadow: 0 0 6px #9ccc3d; animation-duration: 0.3s; }
+
+/* Uçan: ağ yarımay (hava kəsiyi) fırlanır */
+.fSlash {
+  background: transparent;
+  box-shadow: inset -9px 0 0 0 #eaf0ff, 0 0 14px #8aa4ff;
+  animation-name: fly, spin;
+  animation-duration: 0.26s, 0.26s;
+  animation-timing-function: ease-in, linear;
+}
+@keyframes spin { to { rotate: 540deg; } }
+.fWind { height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, #cfe0ff); animation-duration: 0.28s; }
+
+/* Adi: fırlanan ulduz */
+.fStar {
+  background: #fff;
+  border-radius: 0;
+  clip-path: polygon(50% 0, 62% 36%, 100% 38%, 70% 60%, 80% 100%, 50% 76%, 20% 100%, 30% 60%, 0 38%, 38% 36%);
+  filter: drop-shadow(0 0 6px #fff);
+  animation-name: fly, spin;
+  animation-duration: 0.24s, 0.24s;
+  animation-timing-function: ease-in, linear;
+}
+
+/* Şimşək: SVG xətti dərhal çəkilir və titrəyir */
+.bolt { position: absolute; inset: 0; overflow: visible; }
+.boltGlow, .boltCore { fill: none; stroke-linejoin: round; stroke-linecap: round; animation: zap 0.38s 0.06s linear both; }
+.boltGlow { stroke: #ffd23f; stroke-width: 11; opacity: 0.5; }
+.boltCore { stroke: #fff; stroke-width: 3.5; }
+@keyframes zap {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  30% { opacity: 0.25; }
+  45% { opacity: 1; }
+  65% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+.flash {
+  position: absolute;
+  left: -60px;
+  top: -60px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 10%, rgba(255, 210, 63, 0.7) 40%, transparent 70%);
+  animation: flashPop 0.35s 0.08s ease-out both;
+}
+@keyframes flashPop { from { transform: scale(0.3); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
 
 /* Hədəfdəki zərbə nöqtəsi: şar çatandan sonra başlayır */
 .impact { position: absolute; left: 0; top: 0; transform: translate(var(--x1), var(--y1)); }
@@ -67,3 +127,43 @@
 .missText { color: var(--muted); font-size: 0.85em; text-shadow: 0 2px 0 rgba(0, 0, 0, 0.7); }
 .critText { font-size: 1.25em; text-shadow: 0 0 14px var(--gold), 0 2px 0 rgba(0, 0, 0, 0.7); }
 .critRing { border-color: var(--gold); border-width: 5px; }
+
+/* ---------- Zərbə partlayışı: hissəciklər mərkəzdən yayılır ---------- */
+.b {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--sz, 8px);
+  height: var(--sz, 8px);
+  margin: calc(var(--sz, 8px) / -2) 0 0 calc(var(--sz, 8px) / -2);
+  border-radius: 50%;
+  animation: spark 0.55s 0.22s ease-out both;
+}
+@keyframes spark {
+  from { opacity: 1; transform: translate(0, 0) scale(0.5); }
+  to { opacity: 0; transform: translate(var(--bx), var(--by)) scale(1.1); }
+}
+.bEmber { background: radial-gradient(circle, #fff3b0, #ff8a2e 60%, #ff3d1a); box-shadow: 0 0 8px #ff7a45; }
+.bDrop { background: radial-gradient(circle at 35% 30%, #fff, #6ec3ff 60%, #2e8bff); animation-name: splash; }
+@keyframes splash {
+  from { opacity: 1; transform: translate(0, 0) scale(0.6); }
+  45% { opacity: 1; transform: translate(var(--bx), calc(var(--by) - 22px)) scale(1); }
+  to { opacity: 0; transform: translate(calc(var(--bx) * 1.15), calc(var(--by) + 34px)) scale(0.8); }
+}
+.bSpark { width: 3px; height: calc(var(--sz) * 3); border-radius: 2px; background: #fff7b0; box-shadow: 0 0 8px #ffd23f; }
+.bCloud { background: radial-gradient(circle, rgba(182, 92, 255, 0.85), rgba(90, 29, 154, 0.5) 60%, transparent 72%); animation-name: cloud; animation-duration: 0.8s; }
+@keyframes cloud {
+  from { opacity: 0.9; transform: translate(0, 0) scale(0.3); }
+  to { opacity: 0; transform: translate(var(--bx), var(--by)) scale(1.7); }
+}
+.bFeather { border-radius: 60% 0; background: #eaf0ff; box-shadow: 0 0 8px #8aa4ff; animation-name: feather; animation-duration: 0.7s; }
+@keyframes feather {
+  from { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+  to { opacity: 0; transform: translate(var(--bx), calc(var(--by) + 24px)) rotate(240deg); }
+}
+.bBug { background: #b6e84a; box-shadow: 0 0 6px #9ccc3d; }
+.bStar {
+  border-radius: 0;
+  background: #fff;
+  clip-path: polygon(50% 0, 62% 36%, 100% 38%, 70% 60%, 80% 100%, 50% 76%, 20% 100%, 30% 60%, 0 38%, 38% 36%);
+}

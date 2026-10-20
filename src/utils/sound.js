@@ -431,3 +431,12 @@ export const playBust = () =>
 // Mərc seçimi / çip kliki
 export const playChip = () =>
   run((c, t) => voice(c, { type: "triangle", freq: 700, to: 1000, t, dur: 0.06, vol: 0.09 }));
+
+// Final: kamera yaxınlaşanda gurultulu "vuuuum" + dərin zərbə
+export const playZoom = () =>
+  run((c, t) => {
+    hiss(c, { t, dur: 0.9, vol: 0.14, freq: 300, to: 3000, q: 0.7, attack: 0.5, wet: 0.2 });
+    voice(c, { type: "sawtooth", freq: 80, to: 220, t, dur: 0.9, vol: 0.07, lp: 900, wet: 0.2 });
+    voice(c, { freq: 90, to: 28, t: t + 0.9, dur: 0.6, vol: 0.5, wet: 0.2 });
+    hiss(c, { t: t + 0.9, dur: 0.25, vol: 0.2, freq: 1200 });
+  });

@@ -20,15 +20,17 @@ import {
   playHit,
   playOpen,
   playWin,
+  playZoom,
   startMusic,
   stopMusic,
 } from "./utils/sound";
-import { Background, BattleFx, Button, TeamSection, PokemonModal } from "./components";
+import { Background, BattleFx, Button, Finale, TeamSection, PokemonModal } from "./components";
 import styles from "./App.module.css";
 
 const INTRO_MS = 800; // yeni komandalar görünəndən sonra döyüşün başlamasına qədər
 const STEP_MS = { 1: 450, 2: 240 }; // iki zərbə arasındakı fasilə (sürətə görə)
 const STAKES = [10, 25, 50];
+const ZOOM_MS = 1700; // kamera qalibə yaxınlaşır, sonra final kartı açılır
 
 const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -72,7 +74,9 @@ export default function App() {
   const [speed, setSpeed] = useState(1);
   const [outcome, setOutcome] = useState(null); // { bet, won, delta, bonus }
 
+  const [finale, setFinale] = useState(0); // 0: yoxdur · 1: kamera yaxınlaşır · 2: final kartı
   const timer = useRef(null);
+  const finaleTimer = useRef(null);
   const fxCount = useRef(0);
   const speedRef = useRef(1);
   const pageRef = useRef(null);
@@ -87,6 +91,7 @@ export default function App() {
   useEffect(
     () => () => {
       clearTimeout(timer.current);
+      clearTimeout(finaleTimer.current);
       stopMusic();
     },
     []
@@ -126,6 +131,9 @@ export default function App() {
         setFx(null);
         setPhase("done");
         playWin();
+        setFinale(1);
+        playZoom();
+        finaleTimer.current = setTimeout(() => setFinale(2), ZOOM_MS);
         if (placed > 0) {
           const won = match.winnerIndex === 0;
           const res = settleBet(progress, { stake: placed, mult: match.odds[0].mult, won });
@@ -162,6 +170,8 @@ export default function App() {
     setStake((s) => Math.min(s, Math.max(progress.coins < MIN_STAKE ? REFILL_COINS : progress.coins, MIN_STAKE)));
     setRound((r) => r + 1);
     setFx(null);
+    clearTimeout(finaleTimer.current);
+    setFinale(0);
     setPhase("pick");
     playClick();
   };
@@ -330,7 +340,7 @@ export default function App() {
           </Button>
         </header>
 
-        <div className={styles.arena}>
+        <div className={`${styles.arena} ${finale && phase === "done" ? styles[`zoom${match.winnerIndex}`] : ""}`}>
           {renderSide(0)}
 
           <div className={styles.vsRow} aria-live="polite">
@@ -344,6 +354,15 @@ export default function App() {
       </main>
 
       <BattleFx event={fx} />
+      {finale === 2 && phase === "done" && (
+        <Finale
+          match={match}
+          outcome={outcome}
+          streak={progress.streak}
+          onNext={nextMatch}
+          onClose={() => setFinale(0)}
+        />
+      )}
       <PokemonModal pokemon={selected} onClose={closeModal} />
     </>
   );
