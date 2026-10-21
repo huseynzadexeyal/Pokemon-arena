@@ -13,17 +13,17 @@ const range = (n) => Array.from({ length: n }, (_, i) => i);
 //  bolt   — true olsa, uçuş əvəzinə şimşək xətti çəkilir
 const FX = {
   fire: {
-    flight: { count: 8, cls: "fFire", spread: 7, size: [10, 28], stagger: 0.025 },
-    burst: { count: 12, cls: "bEmber", dist: [34, 78], size: [6, 14] },
+    flight: { count: 6, cls: "fFire", spread: 7, size: [10, 28], stagger: 0.025 },
+    burst: { count: 8, cls: "bEmber", dist: [34, 78], size: [6, 14] },
   },
   water: {
-    flight: { count: 7, cls: "fDrop", spread: 12, size: [9, 20], stagger: 0.02 },
-    burst: { count: 11, cls: "bDrop", dist: [26, 66], size: [6, 12], gravity: true },
+    flight: { count: 5, cls: "fDrop", spread: 12, size: [9, 20], stagger: 0.02 },
+    burst: { count: 8, cls: "bDrop", dist: [26, 66], size: [6, 12], gravity: true },
   },
   electric: {
     bolt: true,
     flight: { count: 0 },
-    burst: { count: 10, cls: "bSpark", dist: [30, 80], size: [4, 8] },
+    burst: { count: 8, cls: "bSpark", dist: [30, 80], size: [4, 8] },
   },
   poison: {
     flight: { count: 4, cls: "fToxic", spread: 8, size: [20, 32], stagger: 0.04 },
@@ -32,11 +32,11 @@ const FX = {
   flying: {
     flight: { count: 1, cls: "fSlash", spread: 0, size: [38, 38], stagger: 0 },
     wind: 4,
-    burst: { count: 7, cls: "bFeather", dist: [30, 74], size: [8, 15] },
+    burst: { count: 5, cls: "bFeather", dist: [30, 74], size: [8, 15] },
   },
   bug: {
-    flight: { count: 11, cls: "fBug", spread: 26, size: [6, 10], stagger: 0.012 },
-    burst: { count: 9, cls: "bBug", dist: [24, 62], size: [5, 9] },
+    flight: { count: 8, cls: "fBug", spread: 26, size: [6, 10], stagger: 0.012 },
+    burst: { count: 7, cls: "bBug", dist: [24, 62], size: [5, 9] },
   },
   normal: {
     flight: { count: 1, cls: "fStar", spread: 0, size: [30, 30], stagger: 0 },

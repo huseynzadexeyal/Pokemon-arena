@@ -8,6 +8,7 @@ import {
   settleBet,
   WATCH_REWARD,
 } from "./utils/progress";
+import { measure, setFrozen } from "./utils/perf";
 import {
   isMuted,
   setMuted,
@@ -89,6 +90,12 @@ export default function App() {
 
   useEffect(() => saveProgress(progress), [progress]);
 
+  // Final kartı açıqkən arxadakı animasiyalar dayanır
+  useEffect(() => {
+    setFrozen(finale === 2 && phase === "done");
+    return () => setFrozen(false);
+  }, [finale, phase]);
+
   // Komponent silinəndə gözləyən timeout-u və musiqini təmizləyirik
   useEffect(
     () => () => {
@@ -123,6 +130,7 @@ export default function App() {
     setPhase("fighting");
     setOutcome(null);
     setFx(null);
+    measure(3000); // döyüşdə kadr sürəti aşağıdırsa yüngül rejim
     playBattleStart();
     playReveal();
     startMusic();

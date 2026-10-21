@@ -36,3 +36,22 @@ h1, h2, h3, p { margin: 0; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Final kartı açıqdır: arxa plan və meydan animasiyaları dayanır (kadr sürəti üçün) */
+html[data-frozen] main,
+html[data-frozen] main *,
+html[data-frozen] #root > div[aria-hidden="true"],
+html[data-frozen] #root > div[aria-hidden="true"] * {
+  animation-play-state: paused !important;
+}
+
+/* Yüngül rejim: zəif cihazlarda yalnız bəzək effektləri söndürülür, oyun eyni qalır */
+html[data-lite] [class*="mote"],
+html[data-lite] [class*="ballGlow"],
+html[data-lite] [class*="shadow"],
+html[data-lite] [class*="orb"],
+html[data-lite] [class*="particle"] { display: none !important; }
+html[data-lite] [class*="grid"],
+html[data-lite] [class*="image"],
+html[data-lite] [class*="rays"] { animation: none !important; }
+html[data-lite] [class*="art"]::before { animation: none !important; }

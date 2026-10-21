@@ -167,10 +167,11 @@ const PokemonCard = memo(function PokemonCard({ pokemon, hp, onMore, index = 0, 
           data-t={type}
         >
           <span className={styles.shadow} aria-hidden="true" />
+          {!faceUp && <span className={styles.ballGlow} aria-hidden="true" />}
           {/* Tipə uyğun uçuşan hissəciklər: alov közləri, qabarcıqlar, qığılcımlar... */}
           {faceUp &&
             hp > 0 &&
-            [0, 1, 2, 3, 4, 5].map((k) => (
+            [0, 1, 2].map((k) => (
               <span key={k} className={styles.mote} style={{ "--k": k }} aria-hidden="true" />
             ))}
           {spawn && <span className={styles.spawnRing} aria-hidden="true" />}

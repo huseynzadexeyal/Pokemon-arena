@@ -197,7 +197,7 @@
 
 /* ---------- Final: kamera qalib komandaya yaxınlaşır, məğlub tünd olur ---------- */
 .arena { transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.arena > * { transition: opacity 0.8s ease, filter 0.8s ease; }
+.arena > * { transition: opacity 0.8s ease; }
 .zoom0 { transform: scale(1.12); transform-origin: 50% 0; }
 .zoom1 { transform: scale(1.12); transform-origin: 50% 100%; }
-.zoom0 > :nth-child(3), .zoom1 > :nth-child(1) { opacity: 0.35; filter: saturate(0.4); }
+.zoom0 > :nth-child(3), .zoom1 > :nth-child(1) { opacity: 0.4; }
